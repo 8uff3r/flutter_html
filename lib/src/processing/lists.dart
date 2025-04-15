@@ -58,6 +58,15 @@ class ListProcessing {
     // Add the counters for the current scope.
     tree.counters.addAll(counters?.deepCopy() ?? []);
 
+    // Check if the current node is an <ol> element and has a start attribute.
+    if (tree.name == 'ol' &&
+        tree.element?.attributes.containsKey('start') == true) {
+      final startValue =
+          int.tryParse(tree.element?.attributes['start'] ?? '1') ?? 1;
+      tree.style.counterReset ??= {};
+      tree.style.counterReset!['list-item'] = startValue - 1;
+    }
+
     // Create any new counters
     if (tree.style.counterReset != null) {
       tree.style.counterReset!.forEach((counterName, initialValue) {
